@@ -17,88 +17,121 @@ $outFolder = $argv[2] ?? './out';
 // Script logic
 ////////////////
 
+// Check we have required options
 if (empty($bookSlug) || empty($outFolder)) {
     errorOut("Both a book slug and output folder must be provided");
 }
 
+// Create the output folder if it does not exist
 if (!is_dir($outFolder)) {
     mkdir($outFolder, 0777, true);
 }
 
+// Get full output directory and book details
 $outDir = realpath($outFolder);
 $book = getBookBySlug($bookSlug);
 
+// Error out if we don't have a book
 if (is_null($book)) {
     errorOut("Could not find book with the URL slug: {$bookSlug}");
 }
 
+// Get all chapters and pages within the book
 $chapters = getAllOfAtListEndpoint("api/chapters", ['filter[book_id]' => $book['id']]);
 $pages = getAllOfAtListEndpoint("api/pages", ['filter[book_id]' => $book['id']]);
 
+// Get the full content for each page
 foreach ($pages as $index => $page) {
     $pages[$index] = apiGetJson("api/pages/{$page['id']}");
 }
 
+// Create the image output directory
 if (!is_dir($outDir . "/images")) {
     mkdir($outDir . "/images", 0777, true);
 }
 
+// Find the pages that are not within a chapter
 $directBookPages = array_filter($pages, function($page) {
     return empty($page['chapter_id']);
 });
 
 // Create book index file
-$bookIndex = getBookContent($book, $chapters, $directBookPages);
+$bookIndex = getBookHtmlOutput($book, $chapters, $directBookPages);
 file_put_contents($outDir . "/index.html", $bookIndex);
 
+// Create a HTML file for each chapter
+// in addition to each page within those chapters
 foreach ($chapters as $chapter) {
     $childPages = array_filter($pages, function($page) use ($chapter) {
         return $page['chapter_id'] == $chapter['id'];
     });
-    $chapterPage = getChapterContent($chapter, $childPages);
+    $chapterPage = getChapterHtmlOutput($chapter, $childPages);
     file_put_contents($outDir . "/chapter-{$chapter['slug']}.html", $chapterPage);
 
     foreach ($childPages as $childPage) {
-        $childPageContent = getPageContent($childPage, $chapter);
+        $childPageContent = getPageHtmlOutput($childPage, $chapter);
         $childPageContent = extractImagesFromHtml($childPageContent);
         file_put_contents($outDir . "/page-{$childPage['slug']}.html", $childPageContent);
     }
 }
 
+// Create a file for each direct child book page
 foreach ($directBookPages as $directPage) {
-    $directPageContent = getPageContent($directPage, null);
+    $directPageContent = getPageHtmlOutput($directPage, null);
     $directPageContent = extractImagesFromHtml($directPageContent);
     file_put_contents($outDir . "/page-{$directPage['slug']}.html", $directPageContent);
 }
 
+/**
+ * Scan the given HTML for image URL's and extract those images
+ * to save them locally and update the HTML references to point
+ * to the local files.
+ */
 function extractImagesFromHtml(string $html): string {
     global $outDir;
+    static $savedImages = [];
     $matches = [];
     preg_match_all('/<img.*?src=["\'](.*?)[\'"].*?>/i', $html, $matches);
     foreach (array_unique($matches[1] ?? []) as $url) {
-        $image = file_get_contents($url);
+        $image = getImageFile($url);
+        if ($image === false) {
+            continue;
+        }
+
         $name = basename($url);
         $fileName = $name;
         $count = 1;
-        while (file_exists($outDir . "/images/" . $fileName)) {
+        while (isset($savedImages[$fileName])) {
             $fileName = $count . '-' . $name;
+            $count++;
         }
+
+        $savedImages[$fileName] = true;
         file_put_contents($outDir . "/images/" . $fileName, $image);
         $html = str_replace($url, "./images/" . $fileName, $html);
     }
     return $html;
 }
 
-function getImageFile($url): string {
+/**
+ * Get an image file from the given URL.
+ * Checks if it's hosted on the same instance as the API we're
+ * using so that auth details can be provided for BookStack images
+ * in case local_secure images are in use.
+ */
+function getImageFile(string $url): string {
     global $apiUrl;
     if (strpos(strtolower($url), strtolower($apiUrl)) === 0) {
         $url = substr($url, strlen($apiUrl));
         return apiGet($url);
     }
-    return file_get_contents($url);
+    return @file_get_contents($url);
 }
 
-function getBookContent(array $book, array $chapters, array $pages): string {
+/**
+ * Get the HTML representation of a book.
+ */
+function getBookHtmlOutput(array $book, array $chapters, array $pages): string {
     $content = "<h1>{$book['name']}</h1>";
     $content .= "<p>{$book['description']}</p>";
     $content .= "<hr>";
@@ -119,7 +152,10 @@ function getBookContent(array $book, array $chapters, array $pages): string {
     return $content;
 }
 
-function getChapterContent(array $chapter, array $pages): string {
+/**
+ * Get the HTML representation of a chapter.
+ */
+function getChapterHtmlOutput(array $chapter, array $pages): string {
     $content = "<p><a href='./index.html'>Back to book</a></p>";
     $content .= "<h1>{$chapter['name']}</h1>";
     $content .= "<p>{$chapter['description']}</p>";
@@ -134,7 +170,10 @@ function getChapterContent(array $chapter, array $pages): string {
     return $content;
 }
 
-function getPageContent(array $page, ?array $parentChapter): string {
+/**
+ * Get the HTML representation of a page.
+ */
+function getPageHtmlOutput(array $page, ?array $parentChapter): string {
     if (is_null($parentChapter)) {
         $content = "<p><a href='./index.html'>Back to book</a></p>";
     } else {
@@ -189,7 +228,7 @@ function apiGet(string $endpoint): string {
     $url = rtrim($apiUrl, '/') . '/' . ltrim($endpoint, '/');
     $opts = ['http' => ['header' => "Authorization: Token {$clientId}:{$clientSecret}"]];
     $context = stream_context_create($opts);
-    return file_get_contents($url, false, $context);
+    return @file_get_contents($url, false, $context);
 }
 
 /**
@@ -211,6 +250,9 @@ function dd(...$args) {
     exit(1);
 }
 
+/**
+ * Alert of an error then exit the script.
+ */
 function errorOut(string $text) {
     echo "ERROR: " .  $text;
     exit(1);
