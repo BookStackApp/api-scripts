@@ -5,6 +5,8 @@ This script will scan through all pages, chapters books and shelves via the API 
 **This is a very simplistic single-script-file example of using the endpoints API together**
 , it is not a fully-featured & validated script. 
 
+Keep in mind, The sitemap generated will reflect content visible to the API user used when running the script. 
+
 ## Requirements
 
 You will need php (~7.2+) installed on the machine you want to run this script on.
