@@ -1,0 +1,16 @@
+{
+  "name": "docx-to-page",
+  "version": "1.0.0",
+  "description": "This script will take a docx file, attempt to convert it to a BookStack suitable format, then upload it into a BookStack book via the API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Dan Brown",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "mammoth": "^1.4.17"
+  }
+}
