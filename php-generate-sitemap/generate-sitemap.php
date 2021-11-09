@@ -68,11 +68,13 @@ $pageEndpoints = array_map(function ($page) use ($bookSlugsById) {
 }, $pages);
 
 // Gather all our endpoints
-$allEndpoints = $additionalEndpoints
-    + $pageEndpoints
-    + $chapterEndpoints
-    + $bookEndpoints
-    + $shelfEndpoints;
+$allEndpoints = array_merge(
+    $additionalEndpoints,
+    $pageEndpoints,
+    $chapterEndpoints,
+    $bookEndpoints,
+    $shelfEndpoints
+);
 
 // Fetch our sitemap XML
 $xmlSitemap = generateSitemapXml($allEndpoints);
@@ -87,6 +89,7 @@ function generateSitemapXml(array $endpoints): string
 {
     global $baseUrl;
     $doc = new DOMDocument("1.0", "UTF-8");
+    $doc->formatOutput = true;
     $urlset = $doc->createElement('urlset');
     $urlset->setAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
