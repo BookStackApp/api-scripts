@@ -1,0 +1,16 @@
+{
+  "name": "upload-attachment",
+  "version": "1.0.0",
+  "description": "This script will upload the passed file into a BookStack book via the API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Dan Brown",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "form-data": "^4.0.0"
+  }
+}
