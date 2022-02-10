@@ -1,0 +1,15 @@
+{
+  "name": "bookstack-generate-postman-collection",
+  "version": "1.0.0",
+  "description": "This script will read the BookStack REST API and attempt to build a postman collection from it",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Dan Brown",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.25.0"
+  }
+}
