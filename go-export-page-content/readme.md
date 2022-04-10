@@ -5,6 +5,8 @@ Content will be written into a directory structure that mirrors the page's locat
 
 Note: This is only provided as an example. The project lacks full error handling and also disables HTTPS verification for easier use with self-signed certificates.
 
+This project uses timeouts, and lacks async requesting, to respect potential rate limits.
+
 ## Requirements
 
 [Go](https://go.dev/) is required to build this project.

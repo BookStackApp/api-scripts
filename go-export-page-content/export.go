@@ -48,7 +48,7 @@ func main() {
 		book := bookIdMap[fullPage.BookId]
 		path := book.Slug
 		if chapter, ok := chapterIdMap[fullPage.ChapterId]; ok {
-			path = "/" + chapter.Slug
+			path += "/" + chapter.Slug
 		}
 
 		// Get the html, or markdown, content from our page along with the file name
@@ -74,14 +74,18 @@ func main() {
 
 		// Write the content to the filesystem
 		fPath := filepath.Join(absPath, fName)
-		err = os.WriteFile(fPath, []byte(content), 0644)
-		if err != nil {
-			panic(err)
-		}
+		go writeOutPageContent(fPath, content)
 
 		// Wait to avoid hitting rate limits
-		time.Sleep(time.Second / 4)
+		time.Sleep(time.Second / 6)
 		currentCount++
 	}
 
+}
+
+func writeOutPageContent(path string, content string) {
+	err := os.WriteFile(path, []byte(content), 0644)
+	if err != nil {
+		panic(err)
+	}
 }
