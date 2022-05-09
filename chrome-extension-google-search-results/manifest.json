@@ -1,0 +1,21 @@
+{
+    "name": "BookStack Google Search",
+    "description": "A simple demo extension to show BookStack results in google",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": ["storage"],
+    "host_permissions": ["http://*/", "https://*/"],
+    "options_page": "options.html",
+    "background": {
+        "service_worker": "background.js"
+    },
+    "externally_connectable": {
+        "matches": ["https://*.google.com/*"]
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://*.google.com/*"],
+            "js": ["content-script.js"]
+        }
+    ]
+  }

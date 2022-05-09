@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Options</title>
+
+    <style>
+        form > div {
+            margin-bottom: 1rem;
+        }
+        form p {
+            margin: 0;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- This is a very simplistic options page to capture BookStack instance API details -->
+
+    <form>
+
+        <div>
+            <label for="base-url">BookStack Base URL</label>
+            <input id="base-url" name="baseUrl" type="text">
+            <p>(No trailing slashes, Do not include '/api/' in URL, Must start with https:// or http://)</p>
+        </div>
+
+        <div>
+            <label for="token-id">API Token ID</label>
+            <input id="token-id" name="tokenId" type="text">
+        </div>
+
+        <div>
+            <label for="token-secret">API Token Secret</label>
+            <input id="token-secret" name="tokenSecret" type="text">
+        </div>
+
+        <button>Save</button>
+
+        <p id="message"></p>
+
+    </form>
+
+
+    <script src="options.js"></script>
+    
+</body>
+</html>
