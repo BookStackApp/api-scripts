@@ -14,20 +14,14 @@ Here we showcase the awesome projects and scripts built by members of the commun
 
 If you've created something Open Source, which is using the BookStack API, feel free to open a pull request to add your project to this list.
 
-### Yetangitu/bs [Bash]
-
-- [GitHub Repo](https://github.com/Yetangitu/bs)
+### [Yetangitu/bs](https://github.com/Yetangitu/bs) [Bash]
 
 A bash-based CLI for interacting with BookStack via the API.
 
-### coffeepenbit/bookstack [Python]
-
-- [GitHub Repo](https://github.com/coffeepenbit/bookstack)
+### [coffeepenbit/bookstack](https://github.com/coffeepenbit/bookstack) [Python]
 
 A Python wrapper for the BookStack API.
 
-###  Szwendacz99/BookStack-Python-exporter [Python]
-
-- [GitHub Repo](https://github.com/Szwendacz99/BookStack-Python-exporter)
+### [Szwendacz99/BookStack-Python-exporter](https://github.com/Szwendacz99/BookStack-Python-exporter) [Python]
 
 A customizable Python script for exporting notes from BookStack through API.
