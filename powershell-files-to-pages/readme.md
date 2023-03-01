@@ -2,14 +2,14 @@
 
 This script will scan through a local `files/` directory for `*.html` files then create pages for each within BookStack, where the name of the files is used for the name of the page and the contents of the file is used for the BookStack page content.
 
-**This is a very simplistic single-script-file example of sending data via PowerShell** and was written with little prior PowerShell knowledge.
+**Note:** This is a very simplistic single-script-file example of sending data via PowerShell and was written with little prior PowerShell knowledge.
 
 ## Requirements
 
 You will need PowerShell available.
 You will also need BookStack API credentials (TOKEN_ID & TOKEN_SECRET) at the ready.
 
-**This script was written using PowerShell (Core) 7.2.10 on Linux".
+*This script was written using PowerShell (Core) 7.2.10 on Linux".*
 
 A `docker-compose.yml` file exists just as a convenient way to run PowerShell, particularly for Linux users. 
 
@@ -33,7 +33,7 @@ Now it's time to run the script like so:
 ./files-to-pages.ps1 <target_book_id>
 ```
 
-## Examples
+## Example
 
 ```powershell
 # Upload HTML files in the relative `files` directory as BookStack pages
