@@ -1,0 +1,8 @@
+version: '3'
+services:
+    powershell:
+        image: mcr.microsoft.com/powershell:latest
+        volumes:
+            - .:/app
+        working_dir: /app
+        command: ["pwsh"]
