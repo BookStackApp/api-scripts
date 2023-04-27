@@ -25,3 +25,7 @@ A Python wrapper for the BookStack API.
 ### [Szwendacz99/BookStack-Python-exporter](https://github.com/Szwendacz99/BookStack-Python-exporter) [Python]
 
 A customizable Python script for exporting notes from BookStack through API.
+
+### [My-Random-Thoughts/psBookStack](https://github.com/My-Random-Thoughts/psBookStack) [PowerShell]
+
+A PowerShell module for interacting with BookStack via the API.
