@@ -1,6 +1,6 @@
 # Export All Books
 
-This script will export all books in your preferred format (PDF, HTML or TXT).
+This script will export all books in your preferred format (PDF, HTML, Markdown or TXT).
 
 ## Requirements
 
@@ -34,4 +34,7 @@ php export-books.php pdf ./
 
 # Export as HTML to an existing "html" directory
 php export-books.php html ./html
+
+# Export as Markdown to an existing "md-files" directory
+php export-books.php markdown ./md-files
 ```

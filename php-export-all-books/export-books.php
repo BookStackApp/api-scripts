@@ -17,15 +17,22 @@ $exportLocation = $argv[2] ?? './';
 // Script logic
 ////////////////
 
+// Get all list of all books in the system
 $books = getAllBooks();
+// Get a reference to our output location
 $outDir = realpath($exportLocation);
 
+// Mapping for export formats to the resulting export file extensions
 $extensionByFormat = [
     'pdf' => 'pdf',
     'html' => 'html',
     'plaintext' => 'txt',
+    'markdown' => 'md',
 ];
 
+// Loop over each book, exporting each one-by-one and saving its
+// contents into the output location, using the books slug as
+// the file name.
 foreach ($books as $book) {
     $id = $book['id'];
     $extension = $extensionByFormat[$exportFormat] ?? $exportFormat;
@@ -37,7 +44,7 @@ foreach ($books as $book) {
 /**
  * Get all books from the system API.
  */
-function getAllBooks() {
+function getAllBooks(): array {
     $count = 100;
     $offset = 0;
     $total = 0;
@@ -47,12 +54,7 @@ function getAllBooks() {
         $endpoint = 'api/books?' . http_build_query(['count' => $count, 'offset' => $offset]);
         $resp = apiGetJson($endpoint);
 
-        // Only set total on first request, due to API bug:
-        // https://github.com/BookStackApp/BookStack/issues/2043
-        if ($offset == 0) {
-            $total = $resp['total'] ?? 0;
-        }
-
+        $total = $resp['total'] ?? 0;
         $newBooks = $resp['data'] ?? [];
         array_push($allBooks, ...$newBooks);
         $offset += $count;
