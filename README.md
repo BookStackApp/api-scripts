@@ -32,4 +32,4 @@ A PowerShell module for interacting with BookStack via the API.
 
 ### [chris-devel0per/FlutterBookstackApiExample](https://github.com/chris-devel0per/FlutterBookstackApiExample) [Flutter/Dart]
 
-Flutter/Dart script showcases BookStackAPI for tasks like fetching, updating content in BookStack instances.
+A Flutter & Dart example project which showcases the use of many BookStack API endpoints.
