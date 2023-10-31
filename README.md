@@ -29,3 +29,7 @@ A customizable Python script for exporting notes from BookStack through API.
 ### [My-Random-Thoughts/psBookStack](https://github.com/My-Random-Thoughts/psBookStack) [PowerShell]
 
 A PowerShell module for interacting with BookStack via the API.
+
+### [chris-devel0per/FlutterBookstackApiExample](https://github.com/chris-devel0per/FlutterBookstackApiExample) [Flutter/Dart]
+
+Flutter/Dart script showcases BookStackAPI for tasks like fetching, updating content in BookStack instances.
