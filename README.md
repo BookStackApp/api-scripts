@@ -33,3 +33,7 @@ A PowerShell module for interacting with BookStack via the API.
 ### [chris-devel0per/FlutterBookstackApiExample](https://github.com/chris-devel0per/FlutterBookstackApiExample) [Flutter/Dart]
 
 A Flutter & Dart example project which showcases the use of many BookStack API endpoints.
+
+### [IceWreck/BookStack2Site](https://github.com/IceWreck/BookStack2Site) [Go]
+
+CLI tool which generates static sites (using Mdbook) from Bookstack Wikis.
