@@ -2,11 +2,9 @@
 
 This repository contains different examples of BookStack API scripts that you might find useful to use or modify.
 
-
 Each folder within this repo is a different script. Each script has it's own readme. Click into a folder to see the readme for detail about the script.
 
-
-*These scripts are not part an officially supported part of the BookStack project itself and therefore may be outdated or more likely to have bugs.*
+_These scripts are not part an officially supported part of the BookStack project itself and therefore may be outdated or more likely to have bugs._
 
 ## Community Projects & Scripts
 
@@ -37,3 +35,7 @@ A Flutter & Dart example project which showcases the use of many BookStack API e
 ### [IceWreck/BookStack2Site](https://github.com/IceWreck/BookStack2Site) [Go]
 
 CLI tool which generates static sites (using Mdbook) from Bookstack Wikis.
+
+### [jaypyles/obisidan_to_bookstack](https://github.com/jaypyles/obsidian-to-bookstack) [Python]
+
+CLI tool to update and sync a Bookstack instance with an Obsidian Vault
