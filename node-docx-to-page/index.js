@@ -3,14 +3,17 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const mammoth = require('mammoth');
+const pdf2html = require('pdf2html');
+const { exec } = require('child_process');
 
-// BookStack API variables
-// Uses values on the environment unless hardcoded
-// To hardcode, add values to the empty strings in the below.
+// Getting command-line arguments for file path and book slug
+const filePath = process.argv[2];
+const bookSlug = process.argv[3];
+
 const bookStackConfig = {
-    base_url: '' || process.env.BS_URL,
-    token_id: '' || process.env.BS_TOKEN_ID,
-    token_secret: '' || process.env.BS_TOKEN_SECRET,
+    base_url: process.env.BS_URL,
+    token_id: process.env.BS_TOKEN_ID,
+    token_secret: process.env.BS_TOKEN_SECRET,
 };
 
 // Script Logic
@@ -22,63 +25,116 @@ if (process.argv.length < 4) {
     return;
 }
 
-// Get arguments passed via command
-const [_exec, _script, docxFile, bookSlug] = process.argv;
-
 // Check the docx file exists
-if (!fs.existsSync(docxFile)) {
-    console.error(`Provided docx file "${docxFile}" could not be found`);
+if (!fs.existsSync(filePath)) {
+    console.error(`Provided file path "${filePath}" could not be found`);
     return;
 }
 
-// Create an axios instance for our API
 const api = axios.create({
     baseURL: bookStackConfig.base_url.replace(/\/$/, '') + '/api/',
     timeout: 5000,
-    headers: { 'Authorization' : `Token ${bookStackConfig.token_id}:${bookStackConfig.token_secret}` },
+    headers: { 'Authorization': `Token ${bookStackConfig.token_id}:${bookStackConfig.token_secret}` },
 });
 
-// Wrap the rest of our code in an async function so we can await within.
-(async function() {
-
-    // Fetch the related book to ensure it exists
-    const {data: bookSearch} = await api.get(`/books?filter[slug]=${encodeURIComponent(bookSlug)}`);
-    if (bookSearch.data.length === 0) {
-        console.error(`Book with a slug of "${bookSlug}" could not be found`);
-        return;
+async function findBook(slug) {
+    try {
+        console.log(`Getting book id from slug ${slug}`);
+        const response = await api.get(`/books?filter[slug]=${encodeURIComponent(slug)}`);
+        if (response.data.data.length > 0) {
+            return response.data.data[0]; // Return the first book matching the slug
+        } else {
+            console.log(`No book found with slug: ${slug}`);
+            return null;
+        }
+    } catch (error) {
+        console.error(`Error finding book: ${error}`);
+        return null;
     }
-    const book = bookSearch.data[0];
+}
 
-    // Convert our document
-    const {value: html, messages} = await mammoth.convertToHtml({path: docxFile});
+async function convertDocument(filePath) {
+    const fileExtension = path.extname(filePath).toLowerCase();
+    if (fileExtension === '.docx') {
+        return convertDocxToHtml(filePath);
+    } else if (fileExtension === '.pdf') {
+        return convertPdfToHtml(filePath);
+    } else {
+        console.log(`Unsupported file format: ${fileExtension}`);
+        return null;
+    }
+}
 
-    // Create a name from our document file name
-    let {name} = path.parse(docxFile);
-    name = name.replace(/[-_]/g, ' ');
+async function convertDocxToHtml(filePath) {
+    try {
+        console.log(`${filePath} is a docx, using mammoth.convertToHtml`);
+        const result = await mammoth.convertToHtml({ path: filePath });
+        return result.value; // Return the HTML content
+    } catch (error) {
+        console.error(`Error converting DOCX to HTML: ${error}`);
+        return null;
+    }
+}
 
-    // Upload our page
-    const {data: page} = await api.post('/pages', {
-        book_id: book.id,
-        name,
-        html,
+async function convertPdfToHtml(filePath) {
+    try {
+        console.log(`${filePath} is a pdf, using pdf2html.html`);
+        const result = await pdf2html.html(filePath);
+        return result; // Return the HTML content
+    } catch (error) {
+        console.error(`Error converting PDF to HTML: ${error}`);
+        return null;
+    }
+}
+
+async function uploadDocument(bookId, name, htmlContent) {
+    try {
+        console.log(`Uploading document with name "${name}"`);
+        const response = await api.post('/pages', {
+            book_id: bookId,
+            name,
+            html: htmlContent,
+        });
+
+        // Output the results
+        console.info(`File converted and created as a page.`);
+        console.info(` - Page ID: ${response.data.id}`);
+        console.info(` - Page Name: ${name}`);
+
+    } catch (error) {
+        console.error(`Error uploading document: ${error}`);
+    }
+}
+
+
+function checkJavaInstallation(callback) {
+    exec('java -version', (error, stdout, stderr) => {
+        if (error) {
+            console.error("Java is not installed or not available in the PATH.");
+            console.error("Please ensure Java is installed and accessible to continue.");
+            process.exit(1); // Exit the script with an error code
+        } else {
+            callback(); // Proceed with the rest of the script
+        }
     });
+}
 
-    // Output the results
-    console.info(`File converted and created as a page.`);
-    console.info(` - Page ID: ${page.id}`);
-    console.info(` - Page Name: ${page.name}`);
-    console.info(`====================================`);
-    console.info(`Conversion occurred with ${messages.length} message(s):`);
-    for (const message of messages) {
-        console.warn(`[${message.type}] ${message.message}`);
-    }
-
-})().catch(err => {
-    // Handle API errors
-    if (err.response) {
-        console.error(`Request failed with status ${err.response.status} [${err.response.statusText}]`);
+async function run(filePath, bookSlug) {
+    if (!filePath || !bookSlug) {
+        console.log('Usage: node myscript.js <file-path> <book-slug>');
         return;
     }
-    // Output all other errors
-    console.error(err)
-});
+    const book = await findBook(bookSlug);
+    if (book) {
+        const htmlContent = await convertDocument(filePath);
+        if (htmlContent) {
+            await uploadDocument(book.id, path.basename(filePath, path.extname(filePath)), htmlContent);
+        }
+    }
+}
+// Perform the Java check, then proceed with the main script if successful
+checkJavaInstallation(main);
+
+function main() {}
+
+run(filePath, bookSlug).catch(console.error);
