@@ -7,6 +7,7 @@
 $apiUrl = getenv('BS_URL') ?: '';
 $clientId = getenv('BS_TOKEN_ID') ?: '';
 $clientSecret = getenv('BS_TOKEN_SECRET') ?: '';
+$htmlCss = getenv('BS_CSS_FILE') ?: '';
 
 // Output Folder
 // Can be provided as a arguments when calling the script
@@ -132,7 +133,9 @@ function getImageFile(string $url): string {
  * Get the HTML representation of a book.
  */
 function getBookHtmlOutput(array $book, array $chapters, array $pages): string {
-    $content = "<h1>{$book['name']}</h1>";
+    global $htmlCss;
+    $content = "<html><link rel='stylesheet' href='{$htmlCss}'><head></head><body>";
+    $content .= "<h1>{$book['name']}</h1>";
     $content .= "<p>{$book['description']}</p>";
     $content .= "<hr>";
     if (count($chapters) > 0) {
@@ -156,7 +159,9 @@ function getBookHtmlOutput(array $book, array $chapters, array $pages): string {
  * Get the HTML representation of a chapter.
  */
 function getChapterHtmlOutput(array $chapter, array $pages): string {
-    $content = "<p><a href='./index.html'>Back to book</a></p>";
+    global $htmlCss;
+    $content = "<html><link rel='stylesheet' href='{$htmlCss}'><head></head><body>";
+    $content .= "<p><a href='./index.html'>Back to book</a></p>";
     $content .= "<h1>{$chapter['name']}</h1>";
     $content .= "<p>{$chapter['description']}</p>";
     $content .= "<hr>";
@@ -174,13 +179,16 @@ function getChapterHtmlOutput(array $chapter, array $pages): string {
  * Get the HTML representation of a page.
  */
 function getPageHtmlOutput(array $page, ?array $parentChapter): string {
+    global $htmlCss;
+    $content = "<html><link rel='stylesheet' href='{$htmlCss}'><head></head><body>";
     if (is_null($parentChapter)) {
-        $content = "<p><a href='./index.html'>Back to book</a></p>";
+        $content .= "<p><a href='./index.html'>Back to book</a></p>";
     } else {
-        $content = "<p><a href='./chapter-{$parentChapter['slug']}.html'>Back to chapter</a></p>";
+        $content .= "<p><a href='./chapter-{$parentChapter['slug']}.html'>Back to chapter</a></p>";
     }
     $content .= "<h1>{$page['name']}</h1>";
     $content .= "<div>{$page['html']}</div>";
+
     return $content;
 }
 
