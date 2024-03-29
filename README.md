@@ -6,6 +6,10 @@ Each folder within this repo is a different script. Each script has it's own rea
 
 _These scripts are not part an officially supported part of the BookStack project itself and therefore may be outdated or more likely to have bugs._
 
+## Contributing
+
+This repository is only meant to provide starting-off points as examples. Feel free to contribute fixes for existing scripts where needed, but we're relatively strict about keeping scope limited to ease maintenance so we're not looking to expand features of the scripts directly contained in this repository. If you build upon a script and want to share that back, feel free to open a PR to add it to the "Community Projects & Scripts" section below. We may be open to new scripts but only where the scope is fixed & narrow, and where there's value in something new it's demonstrating, otherwise PRs may be rejected. If you're unsure feel free to open an issue first to query a new addition before spending time on building out a script.
+
 ## Community Projects & Scripts
 
 Here we showcase the awesome projects and scripts built by members of the community. These may reflect more full-featured examples of API use, or may provide a more complete basis for your own work.
