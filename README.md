@@ -43,3 +43,7 @@ CLI tool which generates static sites (using Mdbook) from Bookstack Wikis.
 ### [jaypyles/obisidan_to_bookstack](https://github.com/jaypyles/obsidian-to-bookstack) [Python]
 
 CLI tool to update and sync a Bookstack instance with an Obsidian Vault
+
+### [bsncubed/bookstack-static-site](https://github.com/bsncubed/bookstack-static-site)
+
+A PHP script to convert a BookStack book to static webpages via the API. 
