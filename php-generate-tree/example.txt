@@ -1,0 +1,9 @@
+├── BOOKSHELF 1: My wonderful shelf of notes
+│   └── BOOK 39: My lovely book in my notes
+│       ├── PAGE 2745: A page within the book
+│       ├── CHAPTER 643: A lone chapter
+│       └── CHAPTER 644: My chapter with page
+│           └── PAGE 47830: My new great page
+├── BOOK 239: Scratch notes
+│   ├── PAGE 47870: Note A
+│   └── PAGE 47872: Note B
